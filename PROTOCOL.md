@@ -25,32 +25,54 @@ effect parameters, current profile, ...).
 Immediately following this header, the payload information starts, which is
 completely specific to the request being sent.
 
+There are actually two different variants of this protocol:
+- **Type A** is used by MasterKeys Pro S/M/L
+- **Type B** is used by MasterKeys MK750 (as of Firmware V1.05.02)
 
 Overview
 --------
 
-| Header  | Meaning
-| ------- | -------
-| `01 02` | [*Unclear*](#01-02-unclear)
-| `05 00` | [Firmware Version](#05-00-firmware-Version)
-| `40 20` | [*Unclear*](#40-20-unclear)
-| `41 00` | [Set firmware control](#41-00-set-firmware-control)
-| `41 01` | [Set effect control](#41-01-set-effect-control)
-| `41 02` | [Set manual control](#41-02-set-manual-control)
-| `41 03` | [Set profile control](#41-03-set-profile-control)
-| `50 55` | [Save current profile](#50-55-save-current-profile)
-| `5x 00` | [Get or set active profile](#5x-00-get-or-set-active-profile)
-| `5x 01` | [*Unknown*](#5x-01-unknown)
-| `5x 10` | [*Unknown*](#5x-10-unknown)
-| `5x 28` | [Get or set active effect](#5x-28-get-or-set-active-effect)
-| `5x 29` | [Get or set enabled effects](#5x-29-get-or-set-enabled-effects)
-| `5x 2c` | [Get or set effect parameters](#5x-2c-get-or-set-effect-parameters)
-| `5x a0` | [Get or set multilayer mapping](#5x-a0-get-or-set-multilayer-mapping)
-| `5x a8` | [Get or set custom RGB mapping](#5x-a8-get-or-set-custom-rgb-mapping)
-| `c0 00` | [Set the entire keyboard to a single color](#c0-00-set-the-entire-keyboard-to-a-single-color)
-| `c0 01` | [Set a single key to a given color](#c0-01-set-a-single-key-to-a-given-color)
-| `c0 02` | [Set the entire keyboard from a given color map](#c0-02-set-the-entire-keyboard-from-a-given-color-map)
-| `c0 f0` | [*Unknown*](#c0-f0-unknown)
+| Header  | A | B | Meaning
+| ------- | - | - | -------
+| `01 02` | X |   | [*Unclear*](#01-02-unclear)
+| `05 00` | X |   | [Firmware Version](#05-00-firmware-Version)
+| `12 00` | ? | X | *Unknown*
+| `12 01` | ? | X | *Unknown*
+| `12 20` |   | X | Firmware Version
+| `12 22` | ? | X | *Unknown*
+| `40 20` | X |   | [*Unclear*](#40-20-unclear)
+| `41 00` | X |   | [Set firmware control](#41-00-set-firmware-control)
+| `41 01` | X |   | [Set effect control](#41-01-set-effect-control)
+| `41 02` | X |   | [Set manual control](#41-02-set-manual-control)
+| `41 03` | X |   | [Set profile control](#41-03-set-profile-control)
+| `42 00` | ? | X | *Unknown*
+| `42 20` | ? | X | *Unknown*
+| `43 00` | ? | X | *Unknown*
+| `43 01` | ? | X | *Unknown*
+| `50 55` | X |   | [Save current profile](#50-55-save-current-profile)
+| `5x 00` | X |   | [Get or set active profile](#5x-00-get-or-set-active-profile)
+| `5x 01` | X |   | [*Unknown*](#5x-01-unknown)
+| `5x 10` | X |   | [*Unknown*](#5x-10-unknown)
+| `52 01` | ? | X | *Unknown*
+| `52 18` | ? | X | *Unknown*
+| `52 20` | ? | X | *Unknown*
+| `5x 28` | X |   | [Get or set active effect](#5x-28-get-or-set-active-effect)
+| `5x 29` | X | ? | [Get or set enabled effects](#5x-29-get-or-set-enabled-effects)
+| `5x 2c` | X | ? | [Get or set effect parameters](#5x-2c-get-or-set-effect-parameters)
+| `5x a0` | X | ? | [Get or set multilayer mapping](#5x-a0-get-or-set-multilayer-mapping)
+| `5x a8` | X | ? | [Get or set custom RGB mapping](#5x-a8-get-or-set-custom-rgb-mapping)
+| `56 00` | ? | X | *Unknown*
+| `56 02` | ? | X | Get effect name
+| `56 14` | ? | X | *Unknown*
+| `56 20` | ? | X | Get effect parameters (?)
+| `56 42` | ? | X | *Unknown*
+| `56 81` | ? | X | *Unknown*
+| `56 83` | ? | X | Set effect parameters
+| `ff aa` | ? | X | Error response
+| `c0 00` | X | ? | [Set the entire keyboard to a single color](#c0-00-set-the-entire-keyboard-to-a-single-color)
+| `c0 01` | X | ? | [Set a single key to a given color](#c0-01-set-a-single-key-to-a-given-color)
+| `c0 02` | X | ? | [Set the entire keyboard from a given color map](#c0-02-set-the-entire-keyboard-from-a-given-color-map)
+| `c0 f0` | X | ? | [*Unknown*](#c0-f0-unknown)
 
 
 01: Handshake / initialization
