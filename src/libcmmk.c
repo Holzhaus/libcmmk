@@ -403,13 +403,18 @@ int cmmk_force_layout(struct cmmk *state, int layout)
 	return CMMK_OK;
 }
 
-int cmmk_get_firmware_version(struct cmmk *state, char *fw, size_t fwsiz)
+int cmmk_get_firmware_version_a(struct cmmk *state, char *fw, size_t fwsiz)
 {
 	unsigned char data[64] = {0x01, 0x02};
 	int r;
 
 	if ((r = send_command(state->dev, data, sizeof(data))) != 0) {
 		return r;
+	}
+
+	if (data[0] == 0xFF && data[1] == 0xAA) {
+		/* Response indicates that previous command was invalid */
+		return CMMK_INVAL;
 	}
 
 	/* Don't want to read past the response buffer */
@@ -420,6 +425,49 @@ int cmmk_get_firmware_version(struct cmmk *state, char *fw, size_t fwsiz)
 	strncpy(fw, (char *)data + 4, fwsiz);
 
 	return CMMK_OK;
+}
+
+int cmmk_get_firmware_version_b(struct cmmk *state, char *fw, size_t fwsiz)
+{
+	unsigned char data[64] = {0x12, 0x20};
+	int r;
+
+	if ((r = send_command(state->dev, data, sizeof(data))) != 0) {
+		return r;
+	}
+
+	if (data[0] == 0xFF && data[1] == 0xAA) {
+		/* Response indicates that previous command was invalid */
+		return CMMK_INVAL;
+	}
+
+	/* Don't want to read past the response buffer */
+	if (fwsiz > 13) {
+		fwsiz = 13;
+	}
+
+	/* Poor Man's UTF-16 decode */
+	for(size_t i = 0; i < fwsiz; i++) {
+		if(data[i*2+9] != 0x00) {
+			return CMMK_INVAL;
+		}
+		fw[i] = data[i*2+8];
+	}
+
+	return CMMK_OK;
+}
+
+int cmmk_get_firmware_version(struct cmmk *state, char *fw, size_t fwsiz)
+{
+	int r;
+
+	r = cmmk_get_firmware_version_a(state, fw, fwsiz);
+
+	if(r != CMMK_OK) {
+		r = cmmk_get_firmware_version_b(state, fw, fwsiz);
+	}
+
+	return r;
 }
 
 /*
