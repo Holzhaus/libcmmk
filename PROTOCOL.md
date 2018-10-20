@@ -62,7 +62,7 @@ Overview
 | `5x a0` | X | ? | [Get or set multilayer mapping](#5x-a0-get-or-set-multilayer-mapping)
 | `5x a8` | X | ? | [Get or set custom RGB mapping](#5x-a8-get-or-set-custom-rgb-mapping)
 | `56 00` | ? | X | *Unknown*
-| `56 02` | ? | X | Get effect name
+| `56 02` | ? | X | [Get effect info](#56-02-get-effect-info)
 | `56 14` | ? | X | *Unknown*
 | `56 20` | ? | X | Get effect parameters (?)
 | `56 42` | ? | X | *Unknown*
@@ -298,6 +298,19 @@ The request consists of 8 separate packets with `o1` being set to `2*i` for the
 
 Every packet contains up to 16 RGB values.
 
+
+56: Effect info
+---------------
+
+### 56 02: Get effect info
+
+Request payload: `56 02 <id>`
+
+This seems to query the effects. `id` is a byte value between `00` and `15`.
+
+The response contains the effect name in ASCII, starting from byte `06` and
+ending at `12` (?), so it's at least 12 bytes long.  The response also contains
+more data, but the meaning is currently unknown.
 
 c0: Manual control
 ------------------
