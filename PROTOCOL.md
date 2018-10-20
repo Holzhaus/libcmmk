@@ -38,7 +38,7 @@ Overview
 | `05 00` | X |   | [Firmware Version](#05-00-firmware-Version)
 | `12 00` | ? | X | *Unknown*
 | `12 01` | ? | X | *Unknown*
-| `12 20` |   | X | Firmware Version
+| `12 20` |   | X | [Firmware Version](#12-20-firmware-Version)
 | `12 22` | ? | X | *Unknown*
 | `40 20` | X |   | [*Unclear*](#40-20-unclear)
 | `41 00` | X |   | [Set firmware control](#41-00-set-firmware-control)
@@ -98,6 +98,16 @@ before filling the rest of the packet with ff.
 The payload of this packet is fairly obvious since it's in ASCII and also
 displayed literally in the control software.
 
+### 12 20: Firmware Version
+
+Requests the firmware version.
+
+Response payload is the firmware version in UTF16LE, starting at offset `08` and
+ending at `22` for a total length of 26 bytes, padded with `00` to reach that length
+before filling the rest of the packet with `ff`.
+
+The payload of this packet is fairly obvious since it's in UTF16 and also
+displayed literally in the control software.
 
 ### 40 20: (Unclear)
 
