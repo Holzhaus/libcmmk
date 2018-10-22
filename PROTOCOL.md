@@ -50,17 +50,24 @@ Overview
 | `43 00` | ? | X | *Unknown*
 | `43 01` | ? | X | *Unknown*
 | `50 55` | X |   | [Save current profile](#50-55-save-current-profile)
-| `5x 00` | X |   | [Get or set active profile](#5x-00-get-or-set-active-profile)
-| `5x 01` | X |   | [*Unknown*](#5x-01-unknown)
-| `5x 10` | X |   | [*Unknown*](#5x-10-unknown)
-| `52 01` | ? | X | *Unknown*
+| `51 00` | X |   | [Set active profile](#5x-00-get-or-set-active-profile)
+| `51 01` | X | ? | [*Unknown*](#5x-01-unknown)
+| `51 10` | X |   | [*Unknown*](#5x-10-unknown)
+| `51 28` | X |   | [Set active effect](#5x-28-get-or-set-active-effect)
+| `51 29` | X | ? | [Set enabled effects](#5x-29-get-or-set-enabled-effects)
+| `51 2c` | X | ? | [Set effect parameters](#5x-2c-get-or-set-effect-parameters)
+| `51 a0` | X | ? | [Set multilayer mapping](#5x-a0-get-or-set-multilayer-mapping)
+| `51 a8` | X | ? | [Set custom RGB mapping](#5x-a8-get-or-set-custom-rgb-mapping)
+| `52 00` | X |   | [Get active profile](#5x-00-get-or-set-active-profile)
+| `52 01` | X | X | [*Unknown*](#5x-01-unknown)
+| `52 10` | X |   | [*Unknown*](#5x-10-unknown)
 | `52 18` | ? | X | *Unknown*
 | `52 20` | ? | X | *Unknown*
-| `5x 28` | X |   | [Get or set active effect](#5x-28-get-or-set-active-effect)
-| `5x 29` | X | ? | [Get or set enabled effects](#5x-29-get-or-set-enabled-effects)
-| `5x 2c` | X | ? | [Get or set effect parameters](#5x-2c-get-or-set-effect-parameters)
-| `5x a0` | X | ? | [Get or set multilayer mapping](#5x-a0-get-or-set-multilayer-mapping)
-| `5x a8` | X | ? | [Get or set custom RGB mapping](#5x-a8-get-or-set-custom-rgb-mapping)
+| `52 28` | X |   | [Get active effect](#5x-28-get-or-set-active-effect)
+| `52 29` | X | ? | [Get enabled effects](#5x-29-get-or-set-enabled-effects)
+| `52 2c` | X | ? | [Get effect parameters](#5x-2c-get-or-set-effect-parameters)
+| `52 a0` | X | ? | [Get multilayer mapping](#5x-a0-get-or-set-multilayer-mapping)
+| `52 a8` | X | ? | [Get custom RGB mapping](#5x-a8-get-or-set-custom-rgb-mapping)
 | `56 00` | ? | X | *Unknown*
 | `56 02` | ? | X | [Get effect info](#56-02-get-effect-info)
 | `56 14` | ? | X | *Unknown*
@@ -68,19 +75,63 @@ Overview
 | `56 42` | ? | X | *Unknown*
 | `56 81` | ? | X | *Unknown*
 | `56 83` | ? | X | Set effect parameters
-| `ff aa` | ? | X | Error response
 | `c0 00` | X | ? | [Set the entire keyboard to a single color](#c0-00-set-the-entire-keyboard-to-a-single-color)
 | `c0 01` | X | ? | [Set a single key to a given color](#c0-01-set-a-single-key-to-a-given-color)
 | `c0 02` | X | ? | [Set the entire keyboard from a given color map](#c0-02-set-the-entire-keyboard-from-a-given-color-map)
 | `c0 f0` | X | ? | [*Unknown*](#c0-f0-unknown)
+| `ff aa` | ? | X | Error response
 
 
 01: Handshake / initialization
 --------------------------------
 
+The protocol flow of the handshake for protocol A is as follows:
+
+| Seq | Required | Request Packet | Response Packet
+| --- | -------- | -------------- | ---------------
+| 1   | No       | 01 02          | 50 00
+| 2   | No       | 40 20          | 40 20
+
+For protocol B, it's more complicated:
+
+| Seq | Required | Request Packet | Response Packet
+| --- | -------- | -------------- | ---------------
+| 1   | Yes      | 41 80          | 41 80
+| 2   | ?        | 12 00          | 12 00
+| 3   | ?        | 12 20          | 12 20
+| 4   | ?        | 12 01          | 12 01
+| 5   | ?        | 12 22          | 12 22
+| 6   | ?        | 42 00          | 42 00
+| 7   | ?        | 43 00          | 43 00
+| 8   | ?        | 40 63          | 40 63
+| 9   | ?        | 41 01          | 41 01
+| 10  | ?        | 40 20          | 40 20
+| 11  | ?        | 52 00          | 52 00
+| 12  | ?        | 41 03          | 41 03
+| 13  | ?        | 51 00          | 51 00
+| 14  | ?        | 52 00          | 52 00
+| 15  | ?        | 52 01          | 52 01
+| 16  | ?        | 52 18 00       | 52 18 00
+| ... | ?        | 52 18 ..       | 52 18 ..
+| 34  | ?        | 52 18 13       | 52 18 13
+| 35  | ?        | 40 63          | 40 633
+| 36  | ?        | 52 20 29       | 52 20 29
+| 37  | ?        | 52 20 3a       | 52 20 3a
+| ... | ?        | 52 20 ..       | 52 20 ..
+| 50  | ?        | 52 20 48       | 52 20 48
+| 51  | ?        | 52 20 35       | 52 20 35
+| 52  | ?        | 52 20 1e       | 52 20 1e
+| ... | ?        | 52 20 ..       | 52 20 ..
+| 52  | ?        | 52 20 27       | 52 20 27
+| 53  | ?        | 40 63          | 40 63
+| 35  | ?        | 40 63          | 40 63
+ **TODO**: Add more packages...
+
+
 ### 01 02: (Unclear)
 
-This is the first packet sent when starting the control software.  The payload
+If your device uses protocol type A, then this is the first packet sent
+when starting the control software, otherwise it's not used. The payload
 of the request is largely unknown (`df fc 00 30 00 00 3d 30 ...`).
 
 Unlike most other packets, the response to `01 02` is not another `01 02`
@@ -98,9 +149,13 @@ before filling the rest of the packet with ff.
 The payload of this packet is fairly obvious since it's in ASCII and also
 displayed literally in the control software.
 
+### 12 00: Get Device Type (?)
+
+This is the second package sent by the CM Portal Software.
+
 ### 12 20: Firmware Version
 
-Requests the firmware version.
+Requests the firmware version for protocol type B devices
 
 Response payload is the firmware version in UTF16LE, starting at offset `08` and
 ending at `22` for a total length of 26 bytes, padded with `00` to reach that length
@@ -111,7 +166,8 @@ displayed literally in the control software.
 
 ### 40 20: (Unclear)
 
-This is the second packet sent in the software startup.  The payload is all `00`.
+This is the second packet sent in the software startup when using
+protocol variant A, or the first one with variant B. The payload is all `00`.
 
 The response is completely unknown in meaning, all that is known right now is
 that it appears to be constant between the same device models on different
@@ -203,23 +259,27 @@ Request and response payload: `00 00 <eid>`.
 The `eid` parameter describes the active effect.  It's represented in the
 library by means of the `cmmk_effect_id` enum, defined as follows:
 
-```c
-enum cmmk_effect_id {
-    CMMK_EFFECT_FULLY_LIT = 0x00,
-    CMMK_EFFECT_BREATHE = 0x01,
-    CMMK_EFFECT_CYCLE = 0x02,
-    CMMK_EFFECT_SINGLE = 0x03,
-    CMMK_EFFECT_WAVE = 0x04,
-    CMMK_EFFECT_RIPPLE = 0x05,
-    CMMK_EFFECT_CROSS = 0x06,
-    CMMK_EFFECT_RAINDROPS = 0x07,
-    CMMK_EFFECT_STARS = 0x08,
-    CMMK_EFFECT_SNAKE = 0x09,
-    CMMK_EFFECT_CUSTOMIZED = 0x0a,
-    CMMK_EFFECT_MULTILAYER = 0xe0,
-    CMMK_EFFECT_OFF = 0xfe 
-};
-```
+| Effect           | Protocol A EID | Protocol B EID
+| ---------------- | -------------- | --------------
+| Fully Lit        | `00`           | `00`
+| Breathe          | `01`           | `08`
+| Cycle            | `02`           | `07`
+| Single           | `03`           | `03`
+| Single Rand      |                | `0a`
+| Wave             | `04`           | `0c`
+| Ripple           | `05`           | `09`
+| Ripple v2        |                | `0f`
+| Cross            | `06`           | `02`
+| Raindrops        | `07`           | `06`
+| Stars            | `08`           | `05`
+| Snake            | `09`           | `10`
+| Customized       | `0a`           | `04`
+| Multilayer       | `e0`           | `ff`
+| Off              | `fe`           | `11`
+| Laser            |                | `0b`
+| Color Cycle      |                | `01`
+| Swirl Passive    |                | `0d`
+| Swirl Active     |                | `0e`
 
 
 ### 5x 29: Get or set enabled effects
