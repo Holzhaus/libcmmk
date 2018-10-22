@@ -90,6 +90,14 @@ enum cmmk_layout_type {
 	CMMK_LAYOUT_TYPE_ISO
 };
 
+/*
+ * The protocol variant of a device.
+ * See PROTOCOL.md for details. */
+enum cmmk_protocol_type {
+	CMMK_PROTOCOL_TYPE_A,
+	CMMK_PROTOCOL_TYPE_B
+};
+
 /* Apparently can be anything in range [0x00, 0x50].
  *  Over 0x50 it just stops animating */
 enum cmmk_effect_speed {
@@ -161,6 +169,7 @@ struct cmmk {
 	 * embedding application, conveniently separate the model from the layout. */
 	enum cmmk_product_type product_type;
 	enum cmmk_layout_type layout_type;
+	enum cmmk_protocol_type protocol_type;
 
 	/*
 	 * Lookup map to get matrix positions for keys in constant time.

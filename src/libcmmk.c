@@ -298,6 +298,16 @@ int cmmk_attach(struct cmmk *state, int product, int layout)
 
 	state->product = product;
 
+	/* MK750 is the only device known to be using the extended protocol
+	 * variant B */
+	switch(product) {
+		case 0x0067:
+			state->protocol_type = CMMK_PROTOCOL_TYPE_B;
+			break;
+		default:
+			state->protocol_type = CMMK_PROTOCOL_TYPE_A;
+	}
+
 	if (state->dev == NULL)
 		goto out_step1;
 
@@ -459,15 +469,11 @@ int cmmk_get_firmware_version_b(struct cmmk *state, char *fw, size_t fwsiz)
 
 int cmmk_get_firmware_version(struct cmmk *state, char *fw, size_t fwsiz)
 {
-	int r;
-
-	r = cmmk_get_firmware_version_a(state, fw, fwsiz);
-
-	if(r != CMMK_OK) {
-		r = cmmk_get_firmware_version_b(state, fw, fwsiz);
+	if (state->protocol_type == CMMK_PROTOCOL_TYPE_B) {
+		return cmmk_get_firmware_version_b(state, fw, fwsiz);
+	} else {
+		return cmmk_get_firmware_version_a(state, fw, fwsiz);
 	}
-
-	return r;
 }
 
 /*
