@@ -184,6 +184,11 @@ static int send_command(libusb_device_handle *dev, unsigned char *data, size_t d
 	hexdump(data, datasiz);
 #endif
 
+	if (data[0] == 0xFF && data[1] == 0xAA) {
+		/* Response indicates that previous command was invalid */
+		return CMMK_ERR;
+	}
+
 	return CMMK_OK;
 }
 
