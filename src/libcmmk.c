@@ -427,11 +427,6 @@ int cmmk_get_firmware_version_a(struct cmmk *state, char *fw, size_t fwsiz)
 		return r;
 	}
 
-	if (data[0] == 0xFF && data[1] == 0xAA) {
-		/* Response indicates that previous command was invalid */
-		return CMMK_INVAL;
-	}
-
 	/* Don't want to read past the response buffer */
 	if (fwsiz > 60) {
 		fwsiz = 60;
@@ -449,11 +444,6 @@ int cmmk_get_firmware_version_b(struct cmmk *state, char *fw, size_t fwsiz)
 
 	if ((r = send_command(state->dev, data, sizeof(data))) != 0) {
 		return r;
-	}
-
-	if (data[0] == 0xFF && data[1] == 0xAA) {
-		/* Response indicates that previous command was invalid */
-		return CMMK_INVAL;
 	}
 
 	/* Don't want to read past the response buffer */
